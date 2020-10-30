@@ -1,0 +1,121 @@
+.data-src {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
+.file-info {
+  flex: 1;
+  border-top: 1px solid rgb(161, 161, 161);
+  border-right: 1px solid rgb(161, 161, 161);
+  background-color: rgb(236, 236, 236);
+}
+.param {
+  margin: 10px 5px;
+  padding: 10px;
+}
+.param p {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+.param div {
+  background-color: rgb(207, 207, 207);
+  padding: 10px;
+  font-size: 12px;
+  border-left: 4px solid rgb(5, 131, 180);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.csv-data {
+  flex: 6;
+  background-color: white;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.table {
+  width: 100%;
+  height: 330px; 
+  background-color: white;
+  margin-bottom: 40px;
+}
+
+#csv-data {
+  text-align: center;
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  border: 2px solid #ddd;
+  width: 100%;
+}
+
+#csv-data td, #csv-data th {
+  border: 1px solid #ddd;
+  padding: 4px;
+  font-size: 12px;
+}
+
+#csv-data tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+#csv-data tr:hover {
+  background-color: #ddd;
+}
+
+#csv-data th {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  text-align: center;
+  background-color: #4c8baf;
+  color: white;
+}
+
+
+.asc::after {
+  content: url('../../images/up.png');
+  display: inline-block;
+  margin-left: 1em;
+  margin-top: 4px;
+}
+
+.desc::after {
+  content: url('../../images/down.png');
+  display: inline-block;
+  margin-left: 1em;
+  margin-top: 4px;
+}
+
+.sort {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  border-top: 1px solid rgb(161, 161, 161);
+}
+.sort-select {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  margin-left: 20px;
+  align-items: center;
+}
+.sort-select p {
+  margin-right: 10px;
+  font-size: 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.title {
+  height: 100%;
+
+}
+.title p {
+  margin: 20px;
+  font-size: 32px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+

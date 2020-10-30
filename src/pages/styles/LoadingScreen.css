@@ -1,0 +1,15 @@
+.loading-screen {
+    height: 100vh;
+    width: 100vw;
+    background: url('../../images/bg.jpg') no-repeat;
+    background-size: cover;
+}
+
+.opacity-block {
+    width: 100wh;
+    height: 100vh;
+    background-color: rgba(40, 40, 40, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+} 
