@@ -9,7 +9,6 @@ function App() {
   const [isFileSelected, setIsFileSelected] = useState(false);
   const [file, setFile] = useState(null);
   const [fileInfo, setFileInfo] = useState(null);
-
   const [showLoading, setShowLoading] = useState(false);
 
   const setCsvFile = (fl, flInfo) => {

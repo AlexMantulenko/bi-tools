@@ -2,22 +2,25 @@
     display: flex;
     flex-direction: row;
     height: 100%;
+    width: 100vw;
 }
 
-.file-analyze {
-    flex: 1;
+.styles-block {
     border-right: 1px solid rgb(161, 161, 161);
     border-top: 1px solid rgb(161, 161, 161);
     background-color: rgb(236, 236, 236);
-    
+    transition: .5s;
+    height: 100%;
 }
 
 .csv-data-visual {
-    flex: 6;
     background-color: rgb(230, 230, 230);
     height: 100%;
     display: flex;
+    flex-grow: 1;
     flex-direction: column;
+    position: relative;
+    left: 0;
 }
 
 .tools {
@@ -80,6 +83,9 @@
 .toggle ul li:hover {
     border: 1px solid black;
 }
+.chart-name {
+    margin: 10px;
+}
 
 .rows, .cols {
     display: flex;
@@ -122,7 +128,7 @@
     margin-bottom: 25px;
     margin-top: 10px;
     border: 0;
-    font-size: 26px;
+    /* font-size: 26px; */
     padding: 5px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -138,5 +144,22 @@
     color: white;
     font-size: 14px;
 }
+
+.close-styles {
+    display: flex;
+    justify-content: flex-end;
+}
+.close-styles button {
+    border: 0;
+    outline: none;
+    background-color: inherit;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.close-styles button:hover {
+    background-color: rgb(223, 223, 223);
+}
+
 
 

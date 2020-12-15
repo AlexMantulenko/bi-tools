@@ -1,29 +1,40 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Select from 'react-select'
+
+import { toPng } from 'html-to-image';
+import download from 'downloadjs';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { ChromePicker } from 'react-color'
 
 import BarSrc from '../images/bar-plot.png';
 import LineSrc from '../images/line-plot.png';
-import ScatterSrc from '../images/scatter-plot.png';
 import AreaSrc from '../images/area-plot.png';
 
 import customStyles from './styles/customStyles';
-
 import Chart from '../components/Chart'; 
-
 import './styles/DataVisual.css';
-
 
 const DataVisual = ({ data }) => {
   const [showCharts, setShowCharts] = useState('none');
   const [hoveredChart, setHoveredChart] = useState('...');
   const [selectedChart, setSelectedChart] = useState(null);
 
+  // Title config
   const [title, setTitle] = useState('');
+  const [titleColorPicker, setTitleColorPicker] = useState({  
+    show: false,
+    color: { r: '0', g: '0', b: '0', a: '1' }
+  });
+  const [titleSize, setTitleSize] = useState(26);
+  const [titleAlign, setTitleAlign] = useState("left");
+  const handleTitle = e => setTitle(e.target.value);
 
-  const handleTitle = e => {
-    setTitle(e.target.value);
-  }
 
+  const [openPanel, setOpenPanel] = useState({
+    position: -225,
+    isOpen: false
+  });
 
   const colourStyles = {
     control: (provided, state) => ({
@@ -79,15 +90,10 @@ const DataVisual = ({ data }) => {
     }),
   };
 
-
-
-
-
   const charts = [
     { id: 1, name: 'bar', icon: BarSrc },
-    { id: 2, name: 'scatter', icon: ScatterSrc },
-    { id: 3, name: 'line', icon: LineSrc },
-    { id: 4, name: 'area', icon: AreaSrc }
+    { id: 2, name: 'line', icon: LineSrc },
+    { id: 3, name: 'area', icon: AreaSrc }
   ];
 
   const [chartConfig, setChartConfig] = useState({
@@ -98,9 +104,11 @@ const DataVisual = ({ data }) => {
   const [options, setOptions] = useState({
     columnOptions: [],
     rowOptions: []
-  })
+  });
 
-  useEffect(() => {
+  const [chartScale, setChartScale] = useState(1);
+
+  const initOptions = () => {
     let header = Object.keys(data[0]);
     const options = [];
     header.forEach(item => {
@@ -110,40 +118,185 @@ const DataVisual = ({ data }) => {
       columnOptions: [...options],
       rowOptions: [...options]
     });
-  }, []);
+  }
+
+  useEffect(initOptions, [data]);
+
+  const chartNode = useRef(null);
+
 
 
   const saveAsImage = () => {
+    const styles = {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    };
     if(!selectedChart) {
-      alert('Nothing to download!')
+      toast.info("Nothing to download!", styles);
     }
     else {
-      alert('Saving...')
+      toast.success("Downloading...", styles);
+      let node = chartNode.current;
+      toPng(node).then(dataUrl => download(dataUrl, 'my-node.png'));
     }
   }
 
+   
+  
+
+  const selectTitleColor = () => {
+    setTitleColorPicker({ 
+      ...titleColorPicker, 
+      show: !titleColorPicker.show 
+    });
+  }
+  const closeTitleColorPicker = () => {
+    setTitleColorPicker({ 
+      ...titleColorPicker, 
+      show: false
+    });
+  }
+  const changeTitleColor = color => {
+    setTitleColorPicker({ 
+      ...titleColorPicker, 
+      color: color.rgb
+    });
+  }
+
+
+  const popover = {
+    position: 'absolute',
+    zIndex: 999
+  }
+  const cover = {
+    position: 'fixed',
+    top: '0px',
+    right: '0px',
+    bottom: '0px',
+    left: '0px',
+  }
+
+  const { r, g, b, a } = titleColorPicker.color;
+
   return (
     <div className="data-visual">
-      <div className="file-analyze">
-          
+      <div 
+        className="styles-block" 
+        style={{
+          position: 'fixed',
+          left: openPanel.position,
+          zIndex: 900
+        }}
+      >
+          <div className="close-styles">
+            <button onClick={() => setOpenPanel({ position: -225, isOpen: false })}>
+              <span class="material-icons">
+                close
+              </span>
+            </button>
+          </div>
           <div className="param">
-              <p>...</p>
-              <div>{}</div>
+              <p>Title color</p>
+              <div className="field" onClick={selectTitleColor}>
+                <div style={{ 
+                  height: 10, 
+                  backgroundColor: `rgba(${r}, ${g}, ${b}, ${a})`,
+                  cursor: 'pointer' 
+                }}>
+                  
+                </div>
+              </div>
+
+              { 
+                titleColorPicker.show ? 
+                <div style={popover}>
+                  <div style={cover} onClick={closeTitleColorPicker}/>
+                  <ChromePicker color={titleColorPicker.color} onChange={changeTitleColor} />
+                </div> 
+                : null 
+              }
+              
           </div>
 
           <div className="param">
-              <p>...</p>
-              <div>{}</div>
+              <p>Title size</p>
+              <div className="field num">
+                <input 
+                  type="number" 
+                  min="10" 
+                  max="40" 
+                  value={titleSize} 
+                  onChange={e => { 
+                    setTitleSize(e.target.value);
+                  }}
+                />
+              </div>
           </div>
 
           <div className="param">
-              <p>...</p>
-              <div>{}</div>
+              <p>Title align</p>
+              <div className="field btns">
+                <button title="left" onClick={() => setTitleAlign("left")}>
+                  <span className="material-icons">
+                    format_align_left
+                  </span>
+                </button>
+                <button title="center" onClick={() => setTitleAlign("center")}>
+                  <span class="material-icons">
+                    format_align_center
+                  </span>
+                </button>
+                <button title="right" onClick={() => setTitleAlign("right")}>
+                  <span className="material-icons">
+                    format_align_right
+                  </span>
+                </button>
+              </div>
           </div>
+
+          <div className="param">
+              <p>Chart scale</p>
+              <div className="field num">
+                <input 
+                  type="number" 
+                  min="0.6" 
+                  max="1.1"
+                  step="0.1" 
+                  value={chartScale} 
+                  onChange={e => { 
+                    setChartScale(e.target.value);
+                  }}
+                />
+              </div>
+          </div>
+
       </div>
 
       <div className="csv-data-visual">
           <div className="tools">
+            <button 
+              className="save-as-img"
+              disabled={!selectedChart}
+              onClick={() => {
+                if(openPanel.isOpen) {
+                  setOpenPanel({ position: -225, isOpen: false });
+                }
+                else {
+                  setOpenPanel({ position: 0, isOpen: true });
+                }
+              }}
+            
+            >
+              <span class="material-icons">
+                format_paint
+              </span>
+              Styles
+            </button>
             <button 
               className="save-as-img"
               onClick={saveAsImage}
@@ -177,8 +330,16 @@ const DataVisual = ({ data }) => {
                             setSelectedChart(item);
                             setShowCharts('none');
                           }
-                          else {
-                            alert("Firstly select rows and columns!") 
+                          else { 
+                            toast.warn("Firstly select rows and columns!", {
+                              position: "top-right",
+                              autoClose: 3000,
+                              hideProgressBar: false,
+                              closeOnClick: true,
+                              pauseOnHover: true,
+                              draggable: true,
+                              progress: undefined,
+                            });
                           }
 
                         }
@@ -190,11 +351,11 @@ const DataVisual = ({ data }) => {
                       }}
                       onMouseOut={() => setHoveredChart('')}
                     >
-                      <img src={item.icon} width="120" height="80" alt="chart-image" />               
+                      <img src={item.icon} width="120" height="80" alt="chart-img" />               
                     </li>
                   );
                 })}
-                <div>
+                <div className="chart-name">
                   <p>Chart: {hoveredChart}</p>    
                 </div>
               </ul>
@@ -227,7 +388,6 @@ const DataVisual = ({ data }) => {
                 classNamePrefix="select"
                 styles={colourStyles}
                 onChange={opt => { 
-
                   if(opt === null || opt.length === 0) {
                     setSelectedChart(null);
                     setChartConfig({
@@ -237,12 +397,9 @@ const DataVisual = ({ data }) => {
                   }
                   else {
                     const values = [];
-                    opt.forEach(item => {
-                      values.push(item.value);
-                    });
+                    opt.forEach(item => values.push(item.value));
                     setChartConfig({ ...chartConfig, dataRows: [...values] });
-                  }
-                  
+                  }            
                 }}
               />
             </div>
@@ -252,8 +409,13 @@ const DataVisual = ({ data }) => {
 
               { selectedChart ? 
               
-              <div className="chart-area">
+              <div className="chart-area" ref={chartNode}>
                 <input 
+                  style={{ 
+                    color: `rgba(${r}, ${g}, ${b}, ${a})`, 
+                    fontSize: Number(titleSize),
+                    textAlign: titleAlign
+                  }}
                   type="text" 
                   value={title} 
                   onChange={handleTitle}
@@ -263,6 +425,7 @@ const DataVisual = ({ data }) => {
                   chartInfo={selectedChart} 
                   dataColumn={chartConfig.dataColumn} 
                   dataRows={chartConfig.dataRows}
+                  k={chartScale}
                 />
               </div>
 
@@ -270,7 +433,9 @@ const DataVisual = ({ data }) => {
           </div>
 
       </div>
-                
+
+
+      <ToastContainer />          
     </div>
   );
 }

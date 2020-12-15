@@ -1,5 +1,6 @@
 import React from 'react';
-import {Switch, Route, BrowserRouter as Router, NavLink } from 'react-router-dom';
+import { Switch, Route, BrowserRouter as Router, NavLink } from 'react-router-dom';
+import DataAnalyze from './DataAnalyze';
 import DataSource from './DataSource';
 import DataVisual from './DataVisual';
 
@@ -24,6 +25,9 @@ const DataScreen = ({ csvData, goBack, fileInfo }) => {
               <Route path="/data-visualization">
                 <DataVisual data={csvData} />
               </Route>
+              <Route path="/data-analyze">
+                <DataAnalyze data={csvData} />
+              </Route>
             </Switch>
           </div>
 
@@ -31,6 +35,7 @@ const DataScreen = ({ csvData, goBack, fileInfo }) => {
             <ul>
               <li><NavLink to="/data-source">Data Source</NavLink></li>
               <li><NavLink to="/data-visualization">Visualization</NavLink></li>
+              <li><NavLink to="/data-analyze">Analyze</NavLink></li>
             </ul>
           </div>
         </div>
